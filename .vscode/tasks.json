@@ -7,13 +7,20 @@
             "args": [
                 "-g",
                 "${fileDirname}\\**.cpp",
+                // "C:\\Users\\Maya\\Documents\\studies\\defensive_systems\\boost_1_81_0\\stage\\lib\\libboost_system-vc143-mt-gd-x64-1_81.lib",
                 "-I",
-                "C:\\Users\\Student\\Documents\\projects\\boost_1_81_0",
+                "C:\\Users\\Maya\\Documents\\studies\\defensive_systems\\boost_1_81_0",
+                // "-L",
+                // "C:\\Users\\Maya\\Documents\\studies\\defensive_systems\\boost_1_81_0\\stage\\lib",
+                // "stage\\lib",
+                // "-l",
+                // "libboost_system-vc143-mt-gd-x64-1_81",
                 "-lwsock32",
                 "-lws2_32",
                 "-o",
                 "${fileDirname}\\main.exe"
                 // "${fileDirname}\\${fileBasenameNoExtension}.exe"
+                // "C:\\Users\\Student\\Documents\\projects\\boost_1_81_0",
             ],
             "options": {
                 "cwd": "C:\\msys64\\mingw64\\bin"

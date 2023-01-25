@@ -14,6 +14,7 @@ public:
     char ip[16];
     char file_name[255];
 
+    void save_user_name_and_id();
 
 // public:
     Config();

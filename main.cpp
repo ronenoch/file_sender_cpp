@@ -9,7 +9,7 @@
 
 using boost::asio::ip::tcp;
 
-// if msvc - 
+// if msvc -
 // #pragma pack(push, 1)
 // ...
 // #pragma pack(pop)
@@ -51,6 +51,7 @@ int main(int argc, char **argv)
 
     Config config = Config();
 
+    /* TODO - check if id was found and re register */
     // struct request_header register_header = {
     struct request_register registration_request = {
         .header = {
@@ -71,5 +72,12 @@ int main(int argc, char **argv)
 
     std::cout << "response was: code " << response_header_recv.response_code << \
         " version " << response_header_recv.version << " size " << response_header_recv.payload_size << std::endl;
+
+    if (0 != response_header_recv.payload_size) {
+        /* TODO check if payload size is 16 */
+        boost::asio::read(s, boost::asio::buffer(&config.client_id, response_header_recv.payload_size));
+
+        config.save_user_name_and_id();
+    }
 
 }
