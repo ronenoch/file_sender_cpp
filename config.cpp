@@ -222,6 +222,8 @@ void Config::parse_user_info()
 	else {
 		std::cout << "read_error" << std::endl;
 	}
+	std::cout << "rsa key base 64 " << this->private_rsa_key << std::endl;
+	this->private_rsa_key = Base64Wrapper::decode(this->private_rsa_key);
 	std::cout << "rsa key " << this->private_rsa_key << std::endl;
 
 	//if (!me_file) {

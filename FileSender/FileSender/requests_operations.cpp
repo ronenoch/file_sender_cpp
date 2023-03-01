@@ -23,11 +23,12 @@ GeneralRequest::GeneralRequest(std::shared_ptr<tcp::socket> const& s, std::share
     memcpy((char*)this->request_header.id, config->client_id, 16);
     //this->rsa_private_wrapper = NULL;
     std::cout << "rsa key length " << this->config->private_rsa_key.length() << std::endl;
-    std::cout << "rsa key " << this->config->private_rsa_key << std::endl;
+    /*std::cout << "rsa key " << this->config->private_rsa_key << std::endl;*/
     if (0 != this->config->private_rsa_key.length())
     {
-        std::string real_private_key = Base64Wrapper::decode(this->config->private_rsa_key);
-        this->rsa_private_wrapper = std::make_shared<RSAPrivateWrapper>(real_private_key);
+        /*std::string real_private_key = Base64Wrapper::decode(this->config->private_rsa_key);
+        this->rsa_private_wrapper = std::make_shared<RSAPrivateWrapper>(real_private_key);*/
+        this->rsa_private_wrapper = std::make_shared<RSAPrivateWrapper>(this->config->private_rsa_key);
     }
     else {
         this->rsa_private_wrapper = std::make_shared<RSAPrivateWrapper>();
@@ -45,7 +46,8 @@ int GeneralRequest::send_request_and_handle_response()
     //boost::asio::write(*this->s, boost::asio::buffer(&this->request_header, sizeof(this->request_header)));
     //boost::asio::write(*this->s, boost::asio::buffer(this->request_payload, this->request_header.payload_size));
     std::cout << "request code is " << ((struct request_header*)(this->request_payload))->request_code << std::endl;
-    boost::asio::write(*this->s, boost::asio::buffer(this->request_payload, this->request_header.payload_size + sizeof(this->request_header)));
+    //boost::asio::write(*this->s, boost::asio::buffer(this->request_payload, this->request_header.payload_size + sizeof(this->request_header)));
+    boost::asio::write(*this->s, boost::asio::buffer(this->request_payload, ((struct request_header*)(this->request_payload))->request_code + sizeof(this->request_header)));
     //char data_recv[400] = { 0 };
     boost::asio::read(*this->s, boost::asio::buffer(&this->response_header, sizeof(this->response_header)));
 
@@ -145,6 +147,7 @@ int RERegistrationRequest::handle_response_data()
         this->rsa_private_wrapper->getPublicKey(pubkeybuff, RSAPublicWrapper::KEYSIZE);
         boost::asio::write(*this->s, boost::asio::buffer(this->request_payload, this->request_header.payload_size + sizeof(this->request_header)));*/
         PublicKeyRequest public_key_request(this->s, this->config);
+        public_key_request.response_header = this->response_header;
         return public_key_request.handle_response_data();
 
         return 0;
@@ -156,16 +159,17 @@ int RERegistrationRequest::handle_response_data()
 PublicKeyRequest::PublicKeyRequest(std::shared_ptr<tcp::socket> const& s, std::shared_ptr<Config> const& config)
     : GeneralRequest(s, config)
 {
+    this->request_header.request_code = 1101;
+    this->request_header.payload_size = sizeof(this->request) - sizeof(this->request.header);
     this->request.header = this->request_header;
-    this->request.header.request_code = 1101;
-    this->request.header.payload_size = sizeof(this->request) - sizeof(this->request.header);
-    this->request_payload = (uint8_t*)&this->request;
 
     strncpy((char*)this->request.client_name, config->client_name, CLIENT_NAME_SIZE);
     std::string pub_key = this->rsa_private_wrapper.get()->getPublicKey();
-    std::string base64key = Base64Wrapper::encode(pub_key);
-    memcpy(this->request.pub_key_base64, base64key.c_str(), RSAPublicWrapper::KEYSIZE);
+    //std::string base64key = Base64Wrapper::encode(pub_key);
+    //memcpy(this->request.pub_key_base64, base64key.c_str(), RSAPublicWrapper::KEYSIZE);
+    memcpy(this->request.pub_key, pub_key.c_str(), RSAPublicWrapper::KEYSIZE);
 
+    this->request_payload = (uint8_t*)&this->request;
 }
 
 int PublicKeyRequest::handle_response_data()
@@ -173,7 +177,8 @@ int PublicKeyRequest::handle_response_data()
     uint8_t dummy_id[16];
     std::vector<uint8_t> enc_aes_key(this->response_header.payload_size - 16);
     //std::string enc_aes_key();
-    if (2102 == this->response_header.response_code && 0 != this->response_header.payload_size) {
+    if ((2102 == this->response_header.response_code || 2105 == this->response_header.response_code) 
+                && 0 != this->response_header.payload_size) {
         /* TODO check if payload size is 16 */
         boost::asio::read(*this->s, boost::asio::buffer(dummy_id, 16));
         //boost::asio::read(*this->s, boost::asio::buffer(enc_aes_key, this->response_header.payload_size - 16));

@@ -36,7 +36,7 @@ struct request_register {
 struct request_public_key {
     struct request_header header;
     uint8_t client_name[CLIENT_NAME_SIZE];
-    uint8_t pub_key_base64[RSAPublicWrapper::KEYSIZE];
+    uint8_t pub_key[RSAPublicWrapper::KEYSIZE];
 };
 
 #pragma pack(pop)
