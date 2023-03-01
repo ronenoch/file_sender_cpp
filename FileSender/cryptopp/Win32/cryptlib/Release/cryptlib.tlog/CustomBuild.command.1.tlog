@@ -1,0 +1,7 @@
+^C:\USERS\MAYA\DOCUMENTS\STUDIES\DEFENSIVE_SYSTEMS\FILE_SENDER_CPP\FILESENDER\CRYPTOPP\ADHOC.CPP.PROTO
+if not exist adhoc.cpp copy "C:\Users\Maya\Documents\studies\defensive_systems\file_sender_cpp\FileSender\cryptopp\adhoc.cpp.proto" adhoc.cpp
+        echo: >> adhoc.cpp.copied
+^C:\USERS\MAYA\DOCUMENTS\STUDIES\DEFENSIVE_SYSTEMS\FILE_SENDER_CPP\FILESENDER\CRYPTOPP\RDRAND.ASM
+ml.exe /c /nologo /D_M_X86 /W3 /Cx /Zi /safeseh /Fo"Win32\cryptlib\Release\rdrand-x86.obj" "C:\Users\Maya\Documents\studies\defensive_systems\file_sender_cpp\FileSender\cryptopp\rdrand.asm"
+^C:\USERS\MAYA\DOCUMENTS\STUDIES\DEFENSIVE_SYSTEMS\FILE_SENDER_CPP\FILESENDER\CRYPTOPP\RDSEED.ASM
+ml.exe /c /nologo /D_M_X86 /W3 /Cx /Zi /safeseh /Fo"Win32\cryptlib\Release\rdseed-x86.obj" "C:\Users\Maya\Documents\studies\defensive_systems\file_sender_cpp\FileSender\cryptopp\rdseed.asm"
