@@ -1,6 +1,9 @@
 #ifndef __CONFIG_H
 #define __CONFIG_H
 
+#include "Base64Wrapper.h"
+
+
 class Config
 {
 // private:
@@ -8,13 +11,15 @@ public:
 
     char client_name[255];
     char client_id[16];
-    uint8_t private_rsa_key[128]; // not sure about the length
+    //uint8_t private_rsa_key[128]; // not sure about the length
+    std::string private_rsa_key;
     // uint8_t private_rsa_key_base64[128];
     uint16_t port;
     char ip[16];
     char file_name[255];
 
     void save_user_name_and_id();
+    void save_priv_key(std::string &key);
 
 // public:
     Config();
