@@ -5,20 +5,16 @@
 #include <stdio.h>
 #include <stdexcept>
 #include <string.h>
-//#include <bits/stdc++.h> 
 
 #include "config.h"
 
-//#define _CRT_SECURE_NO_WARNINGS
 
 Config::Config()
 {
-	memset(this->client_id, 0, sizeof(this->client_id));
 	memset(this->client_name, 0, sizeof(this->client_name));
 	memset(this->file_name, 0, sizeof(this->file_name));
 	memset(this->ip, 0, sizeof(this->ip));
 	//memset(this->private_rsa_key, 0, sizeof(this->private_rsa_key));
-	//this->private_rsa_key()
 	Config::parse_transfer_info();
 	Config::parse_user_info();
 }
@@ -30,7 +26,6 @@ void Config::parse_transfer_info()
 	int ret;
 
 	std::ifstream transfer_file("transfer.info");
-	// std::snprintf( buf.get(), size, format.c_str(), args ... );
 
 	std::getline(transfer_file, text);
 	if (!transfer_file) {
@@ -48,12 +43,14 @@ void Config::parse_transfer_info()
 
 		if (0 == text.find(":")) {
 			std::cout << "Error : not a valid format" << std::endl;
-			// TODO throw exception
+			// TODO throw exception ?
 		}
 		else {
 
-			// TODO check ip length
-			//std::cout << "ip length" << ip.length() << std::endl;
+			if (ip.length() >= 16) {
+				std::cout << "ip string length is too big" << std::endl;
+				exit(-1);
+			}
 			memcpy(this->ip, ip.c_str(), ip.length());
 			this->ip[ip.length()] = 0;
 		}
@@ -70,12 +67,9 @@ void Config::parse_transfer_info()
 
 		std::cout << this->ip << std::endl;
 		std::cout << " port " << this->port << std::endl;
-		// std::cout << " port " << port << std::endl;
-		// std::cout << tmp << std::endl;
 	}
 	std::getline(transfer_file, text);
 	if (!transfer_file) {
-		// std::cout << "read failed" << std::endl;
 		if (transfer_file.eof()) {
 			std::cout << "eof" << std::endl;
 		}
@@ -129,12 +123,10 @@ void Config::parse_user_info()
 	int ret;
 
 	std::ifstream me_file("me.info");
-	// std::snprintf( buf.get(), size, format.c_str(), args ... );
 
 	if (me_file.fail()) {
 		std::ofstream me_file("me.info");
 		/* client name should be safe at this point */
-		// me_file.write(this->client_name, strnlen(this->client_name));
 		me_file << this->client_name << std::endl;
 		return;
 	}
@@ -171,13 +163,10 @@ void Config::parse_user_info()
 		return;
 	}
 	else {
-		// /* parse the client name */
-		// if (text.length() >= 255) {
-		//     throw std::invalid_argument("name is too long. must be less than 255");
-		// }
+		/* parse id from hex text to binary */
 		std::stringstream ss;
-		//ss << std::hex << text;
 		std::string s = "";
+		this->client_id.resize(16);
 		int n;
 		for (int i = 0; i < 16; i++) {
 			s = text[i * 2];
@@ -191,27 +180,16 @@ void Config::parse_user_info()
 		}
 		std::cout << std::endl;
 
-
-		/*strncpy(this->client_id, ss.str().c_str(), ss.str().length());
-		this->client_id[ss.str().length()] = 0;*/
-		/* TOOD check that length is 16 */
 		std::cout << "id " << this->client_id << std::endl;
 
 	}
-
-
-	//this->private_rsa_key.resize(1000);
-	/*text.resize(1000);
-	std::copy(std::istreambuf_iterator<char>(me_file), std::istreambuf_iterator<char>(),
-		text.begin());*/
-	//me_file.read()
+	
+	/* read all of the last lines because base64 add newlines. */
 	std::getline(me_file, text);
 	while (me_file) {
 		if (this->private_rsa_key.length() >= 1000) {
 			throw std::invalid_argument("rsa key is too long. must be less than 128");
 		}
-		/*memset(this->private_rsa_key, 0, sizeof(this->private_rsa_key));
-		strncpy((char*)this->private_rsa_key, text.c_str(), text.length());*/
 		this->private_rsa_key = this->private_rsa_key + text;
 		std::getline(me_file, text);
 
@@ -224,30 +202,7 @@ void Config::parse_user_info()
 	}
 	std::cout << "rsa key base 64 " << this->private_rsa_key << std::endl;
 	this->private_rsa_key = Base64Wrapper::decode(this->private_rsa_key);
-	std::cout << "rsa key " << this->private_rsa_key << std::endl;
-
-	//if (!me_file) {
-	////if (0 == text[0]) {
-	//	// std::cout << "read failed" << std::endl;
-	//	if (me_file.eof()) {
-	//		std::cout << "eof" << std::endl;
-	//	}
-	//	else {
-	//		std::cout << "read_error" << std::endl;
-	//	}
-	//}
-	//else {
-	//	/* parse the file name */
-	//	if (text.length() >= 1000) {
-	//		throw std::invalid_argument("rsa key is too long. must be less than 128");
-	//	}
-	//	/*memset(this->private_rsa_key, 0, sizeof(this->private_rsa_key));
-	//	strncpy((char*)this->private_rsa_key, text.c_str(), text.length());*/
-	//	this->private_rsa_key = text;
-
-	//	std::cout << "rsa key " << this->private_rsa_key << std::endl;
-
-	//}
+	//std::cout << "rsa key " << this->private_rsa_key << std::endl;
 
 	me_file.close();
 }
@@ -257,12 +212,11 @@ void Config::save_user_name_and_id()
 	std::ofstream me_file("me.info");
 	static const char hex_digits[] = "0123456789ABCDEF";
 	/* client name should be safe at this point */
-	// me_file.write(this->client_name, strnlen(this->client_name));
 	me_file << this->client_name << std::endl;
 
 	/* TODO make this a static function */
 	std::string output;
-	output.reserve(sizeof(this->client_id) * 2);
+	output.reserve(sizeof(this->client_id.data()) * 2);
 	for (unsigned char c : this->client_id)
 	{
 		output.push_back(hex_digits[c >> 4]);

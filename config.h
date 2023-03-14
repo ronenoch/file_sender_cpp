@@ -10,7 +10,8 @@ class Config
 public:
 
     char client_name[255];
-    char client_id[16];
+    //char client_id[16];
+    std::string client_id;
     //uint8_t private_rsa_key[128]; // not sure about the length
     std::string private_rsa_key;
     // uint8_t private_rsa_key_base64[128];
