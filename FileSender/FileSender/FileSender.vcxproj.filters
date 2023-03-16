@@ -15,12 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FileSender.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\examples.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -36,20 +30,9 @@
     <ClCompile Include="..\..\RSAWrapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="requests_operations.cpp">
+    <ClCompile Include="..\..\requests_operations.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\me.info">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="..\..\README.md">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="..\..\transfer.info">
-      <Filter>Source Files</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\AESWrapper.h">
@@ -64,7 +47,7 @@
     <ClInclude Include="..\..\RSAWrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="requests_operations.h">
+    <ClInclude Include="..\..\requests_operations.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

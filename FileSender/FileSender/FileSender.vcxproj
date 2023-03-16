@@ -137,23 +137,16 @@
     <ClCompile Include="..\..\AESWrapper.cpp" />
     <ClCompile Include="..\..\Base64Wrapper.cpp" />
     <ClCompile Include="..\..\config.cpp" />
-    <ClCompile Include="..\..\examples.cpp" />
     <ClCompile Include="..\..\main.cpp" />
+    <ClCompile Include="..\..\requests_operations.cpp" />
     <ClCompile Include="..\..\RSAWrapper.cpp" />
-    <ClCompile Include="FileSender.cpp" />
-    <ClCompile Include="requests_operations.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\me.info" />
-    <None Include="..\..\README.md" />
-    <None Include="..\..\transfer.info" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\AESWrapper.h" />
     <ClInclude Include="..\..\Base64Wrapper.h" />
     <ClInclude Include="..\..\config.h" />
+    <ClInclude Include="..\..\requests_operations.h" />
     <ClInclude Include="..\..\RSAWrapper.h" />
-    <ClInclude Include="requests_operations.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

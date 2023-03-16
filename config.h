@@ -3,21 +3,20 @@
 
 #include "Base64Wrapper.h"
 
+#define CLIENT_NAME_SIZE (255)
+#define FILE_NAME_SIZE (255)
 
 class Config
 {
-// private:
-public:
+public: /* using the members like using a struct in c, so it is public! */
 
-    char client_name[255];
+    char client_name[CLIENT_NAME_SIZE];
     //char client_id[16];
     std::string client_id;
-    //uint8_t private_rsa_key[128]; // not sure about the length
     std::string private_rsa_key;
-    // uint8_t private_rsa_key_base64[128];
     uint16_t port;
     char ip[16];
-    char file_name[255];
+    char file_name[FILE_NAME_SIZE];
 
     void save_user_name_and_id();
     void save_priv_key(std::string &key);
@@ -28,13 +27,6 @@ public:
 private:
     void parse_transfer_info();
     void parse_user_info();
-    // char * get_client_name();
-    // char * get_client_id();
-    // uint8_t * get_private_rsa_key();
-    // uint16_t get_port();
-    // char * get_ip();
-    // char * get_file_name();
-
 
 };
 

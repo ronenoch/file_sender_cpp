@@ -14,7 +14,6 @@ Config::Config()
 	memset(this->client_name, 0, sizeof(this->client_name));
 	memset(this->file_name, 0, sizeof(this->file_name));
 	memset(this->ip, 0, sizeof(this->ip));
-	//memset(this->private_rsa_key, 0, sizeof(this->private_rsa_key));
 	Config::parse_transfer_info();
 	Config::parse_user_info();
 }
@@ -80,7 +79,7 @@ void Config::parse_transfer_info()
 	}
 	else {
 		/* parse the client name */
-		if (text.length() >= 255) {
+		if (text.length() >= CLIENT_NAME_SIZE) {
 			throw std::invalid_argument("name is too long. must be less than 255");
 		}
 
@@ -93,7 +92,6 @@ void Config::parse_transfer_info()
 
 	std::getline(transfer_file, text);
 	if (!transfer_file) {
-		// std::cout << "read failed" << std::endl;
 		if (transfer_file.eof()) {
 			std::cout << "eof" << std::endl;
 		}
@@ -103,7 +101,7 @@ void Config::parse_transfer_info()
 	}
 	else {
 		/* parse the file name */
-		if (text.length() >= 255) {
+		if (text.length() >= FILE_NAME_SIZE) {
 			throw std::invalid_argument("file name is too long. must be less than 255");
 		}
 
@@ -142,7 +140,7 @@ void Config::parse_user_info()
 	}
 	else {
 		/* parse the client name */
-		if (text.length() >= 255) {
+		if (text.length() >= CLIENT_NAME_SIZE) {
 			throw std::invalid_argument("name is too long. must be less than 255");
 		}
 
@@ -176,7 +174,6 @@ void Config::parse_user_info()
 			std::cout << s << std::endl;
 			std::istringstream(s) >> std::hex >> n;
 			this->client_id[i] = n;
-			//std::istringstream(((uint16_t*)text.c_str())[i]) >> std::hex >> this->client_id[i];
 		}
 		std::cout << std::endl;
 
@@ -184,11 +181,11 @@ void Config::parse_user_info()
 
 	}
 	
-	/* read all of the last lines because base64 add newlines. */
+	/* read all of the last lines because base64 adds newlines. */
 	std::getline(me_file, text);
 	while (me_file) {
 		if (this->private_rsa_key.length() >= 1000) {
-			throw std::invalid_argument("rsa key is too long. must be less than 128");
+			throw std::invalid_argument("rsa key is too long");
 		}
 		this->private_rsa_key = this->private_rsa_key + text;
 		std::getline(me_file, text);

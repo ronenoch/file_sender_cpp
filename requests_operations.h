@@ -6,13 +6,10 @@
 #include <boost/asio.hpp>
 #include <boost/crc.hpp>
 
-#include "../../config.h"
-#include "../../AESWrapper.h"
-#include "../../RSAWrapper.h"
+#include "config.h"
+#include "AESWrapper.h"
+#include "RSAWrapper.h"
 
-
-#define CLIENT_NAME_SIZE (255)
-#define FILE_NAME_SIZE (255)
 
 enum requests_codes {
     REQ_REGISTRATION_CODE = 1100,
@@ -56,7 +53,7 @@ struct response_2103 {
     uint32_t checksum;
 };
 
-struct request_register {
+struct basic_request_with_name {
     struct request_header header;
     uint8_t client_name[CLIENT_NAME_SIZE];
 };
@@ -86,9 +83,12 @@ using boost::asio::ip::tcp;
 /* NOT USING COPYCTORS AT THE PROJECT, also I'm good with the default. I want to make the code the simplest */
 
 class GeneralRequest {
-
+    /**
+     * this class represent the flow of a request.
+     * every request must implement the handle_response_data to handle the specific response.
+     * the general request expects that the derrived classes will put the payload to send in request_payload.
+    */
 public:
-    /* TODO: add expected response payload size */
     std::shared_ptr<RSAPrivateWrapper> rsa_private_wrapper;
     std::shared_ptr<AESWrapper> aes_wrapper;
 
@@ -111,9 +111,10 @@ protected:
 
 };
 
-class BasicRequest : public GeneralRequest{
+class BasicRequest : public GeneralRequest {
+    /* request that contains only client_name */
 public:
-    struct request_register basic_request_header;
+    struct basic_request_with_name basic_request_header;
 
 
     BasicRequest(std::shared_ptr<tcp::socket> const &s, std::shared_ptr<Config> const& config);
@@ -142,6 +143,7 @@ protected:
 };
 
 class PublicKeyRequest : public GeneralRequest {
+    /* public key exchange request */
 public:
     struct request_public_key request;
     PublicKeyRequest(std::shared_ptr<tcp::socket> const &s, std::shared_ptr<Config> const& config);
@@ -166,6 +168,8 @@ protected:
 
 
 class SendFileRequest : public GeneralRequest {
+    /* sends the file in chuncks */
+
     std::string ciphertext;
     boost::crc_32_type crc;
 
@@ -176,6 +180,7 @@ public:
         std::shared_ptr<Config> const& config,
         std::shared_ptr<AESWrapper> const& aes);
     virtual ~SendFileRequest() = default;
+    /* overrriding this function to send chunks instead of one buffer. */
     virtual int send_request_and_handle_response();
 
 protected:
